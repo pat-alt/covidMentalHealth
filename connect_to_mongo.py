@@ -1,25 +1,18 @@
 from pymongo import MongoClient
 from pprint import pprint
+import json
 
 client = MongoClient('mongodb://3.22.27.22:27017')
 
-#switch to test db
-db = client.test
+db = client.final_proj
+collection = db.tweets
+with open('tweet_sample.json') as f:
+    for line in f:
+        file_data = json.loads(line)
+        collection.insert_one(file_data)
 
-#insert data to inventory schema
-db.inventory.insert_one(
-    {"item": "canvas",
-     "qty": 100,
-     "tags": ["cotton"],
-     "size": {"h": 28, "w": 35.5, "uom": "cm"}})
-
-# load inventory schema into cursor
-cursor = db.inventory.find({})
-
-#print all objects in inventory
-for inventory in cursor:
-     pprint(inventory)
-
-#delete all canvas objects in inventory
-db.inventory.delete_many({"item": "canvas"})
+cursor = db.tweets.find({})
+for tweets in cursor:
+     pprint(tweets)
+db.tweets.delete_many({})
 
