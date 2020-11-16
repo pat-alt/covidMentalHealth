@@ -14,5 +14,5 @@ with open('tweet_sample.json') as f:
 cursor = db.tweets.find({})
 for tweets in cursor:
      pprint(tweets)
-db.tweets.delete_many({})
+# db.tweets.delete_many({})
 
