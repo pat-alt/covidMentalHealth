@@ -1,1 +1,1 @@
-0 */1 * * * python covid_to_mongo.py
+0 */1 * * * source ~/.virtualenvs/base/bin/activate; python /Users/polinab/gitworkspace/datawarehousing/bgse-dw-final-project/covid_to_mongo.py
