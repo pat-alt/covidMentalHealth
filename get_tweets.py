@@ -33,7 +33,7 @@ class StreamListener(twpy.StreamListener):
         print(status)
         collection.update(
             {'id': status._json['id']},
-            {'$set': status._json},
+            {'$setOnInsert': status._json},
             upsert=True
         )
 
@@ -47,3 +47,6 @@ stream = twpy.Stream(auth=api.auth, listener=stream_listener)
 stream.filter(track=mental_health)
 
 ### How to shut of the listener?
+
+
+client.close()

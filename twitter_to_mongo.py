@@ -11,8 +11,8 @@ with open('tweet_sample.json') as f:
         file_data = json.loads(line)
         collection.insert_one(file_data)
 
-cursor = db.tweets.find({})
-for tweets in cursor:
-     pprint(tweets)
+# cursor = db.tweets.find({})
+# for tweets in cursor:
+#      pprint(tweets)
 # db.tweets.delete_many({})
 
