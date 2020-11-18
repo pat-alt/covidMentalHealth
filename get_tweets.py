@@ -33,7 +33,7 @@ class StreamListener(twpy.StreamListener):
         print(status)
         collection.update(
             {'id': status._json['id']},
-            {'$set': status._json},
+            {'$setOnInsert': status._json},
             upsert=True
         )
 
