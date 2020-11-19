@@ -44,7 +44,4 @@ stream_listener = StreamListener()
 stream = twpy.Stream(auth=api.auth, listener=stream_listener)
 stream.filter(track=mental_health)
 
-### How to shut of the listener?
-
-
 client.close()
