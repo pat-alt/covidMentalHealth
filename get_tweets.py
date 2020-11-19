@@ -29,8 +29,6 @@ results
 class StreamListener(twpy.StreamListener):
 
     def on_status(self, status):
-        # STATUS IS THE JSON OBJECT - INSERT THAT INTO THE DB?
-        print(status)
         collection.update(
             {'id': status._json['id']},
             {'$setOnInsert': status._json},
