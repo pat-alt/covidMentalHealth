@@ -29,8 +29,6 @@ results
 class StreamListener(twpy.StreamListener):
 
     def on_status(self, status):
-        # STATUS IS THE JSON OBJECT - INSERT THAT INTO THE DB?
-        print(status)
         collection.update(
             {'id': status._json['id']},
             {'$setOnInsert': status._json},
@@ -45,8 +43,5 @@ class StreamListener(twpy.StreamListener):
 stream_listener = StreamListener()
 stream = twpy.Stream(auth=api.auth, listener=stream_listener)
 stream.filter(track=mental_health)
-
-### How to shut of the listener?
-
 
 client.close()
