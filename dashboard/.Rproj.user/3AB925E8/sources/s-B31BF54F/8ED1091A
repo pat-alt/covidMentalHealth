@@ -1,0 +1,26 @@
+{
+    "id": "8ED1091A",
+    "path": "~/Documents/Studium/bgse_data_science/data_warehousing_and_bi/git/bgse-dw-final-project/dashboard/R/app_ui.R",
+    "project_path": "R/app_ui.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1606226935842.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "60,0",
+        "scrollLine": "22"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1606229914,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1606229914229,
+    "read_only": false,
+    "read_only_alternatives": []
+}
