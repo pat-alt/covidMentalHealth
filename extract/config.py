@@ -1,5 +1,5 @@
 from pathlib import Path  # Python 3.6+ only
-env_path = Path('.') / '.env'
+env_path = Path('..') / '.env'
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=env_path)
 import os

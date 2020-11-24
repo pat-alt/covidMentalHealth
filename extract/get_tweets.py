@@ -1,7 +1,6 @@
 ## Script to get tweet data
-from config import * # configuration
+from extract.config import * # configuration
 import tweepy as twpy
-import requests
 from pymongo import MongoClient
 
 # MongoDB connection
