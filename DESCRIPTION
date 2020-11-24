@@ -1,5 +1,5 @@
 Package: covidMentalHealth
-Title: A simple Shiny app that relates COVID-19 to mental health.
+Title: A simple Shiny app that relates COVID-19 to mental health
 Version: 0.0.0.9000
 Authors@R: person('Patrick', 'Altmeyer', email = 'patrick.altmeyer@barcelonagse.eu', role = c('cre', 'aut'))
 Description: PKG_DESC.

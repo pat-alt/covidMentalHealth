@@ -15,7 +15,7 @@
 ## Add meta data about your application
 golem::fill_desc(
   pkg_name = "covidMentalHealth", # The Name of the package containing the App
-  pkg_title = "A simple Shiny app that relates COVID-19 to mental health.", # The Title of the package containing the App
+  pkg_title = "A simple Shiny app that relates COVID-19 to mental health", # The Title of the package containing the App
   pkg_description = "PKG_DESC.", # The Description of the package containing the App
   author_first_name = "Patrick", # Your First Name
   author_last_name = "Altmeyer", # Your Last Name
