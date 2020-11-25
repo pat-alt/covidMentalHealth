@@ -20,6 +20,7 @@ usethis::use_package( "shinydashboard" )
 usethis::use_package( "shinydashboardPlus" )
 usethis::use_package( "data.table" )
 usethis::use_package( "shinyWidgets" )
+usethis::use_package( "reticulate" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

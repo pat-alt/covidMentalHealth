@@ -11,10 +11,15 @@ mod_at_a_glance_ui <- function(id){
   ns <- NS(id)
   tagList(
     fluidRow(
-      shinydashboard::box(plotOutput("plot1", height = 250)),
+      shinydashboard::box(plotOutput(ns("plot1"), height = 250)),
       shinydashboard::box(
         title = "Controls",
-        sliderInput("slider", "Number of observations:", 1, 100, 50)
+        sliderInput(ns("slider"), "Number of observations:", 1, 100, 50)
+      ),
+      shinydashboard::box(
+        title = "Tweets",
+        sliderInput(ns("n_tweets"), "Number of tweets:", 1, 1000, 20),
+        DT::DTOutput(ns("tweets"))
       )
     )
   )
@@ -32,11 +37,10 @@ mod_at_a_glance_server <- function(input, output, session){
     data <- histdata[seq_len(input$slider)]
     hist(data)
   })
+
+  output$tweets <- DT::renderDT({
+    tweets <- import_tweets(input$n_tweets)
+    return(tweets)
+  })
 }
-
-## To be copied in the UI
-# mod_at_a_glance_ui("at_a_glance_ui_1")
-
-## To be copied in the server
-# callModule(mod_at_a_glance_server, "at_a_glance_ui_1")
 
