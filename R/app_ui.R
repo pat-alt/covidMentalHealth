@@ -31,6 +31,9 @@ app_ui <- function(request) {
       ),
       shinydashboard::dashboardBody(
         # Overwrite default CSS:
+        # tags$head(
+        #   tags$link(rel = "stylesheet", type = "text/css", href = "dark.css")
+        # ),
         dashboardthemes::shinyDashboardThemes(
           theme = "grey_light"
         ),
@@ -63,6 +66,11 @@ app_ui <- function(request) {
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function(){
+
+  add_resource_path(
+    "www",
+    app_sys("app/www")
+  )
 
   tags$head(
     favicon(),
