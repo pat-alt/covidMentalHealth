@@ -7,19 +7,35 @@
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
+    #waiter::use_waiter(), # include dependencies
+    #waiter::waiter_show_on_load(),
     golem_add_external_resources(),
     # List the first level UI elements here
     shinydashboard::dashboardPage(
       shinydashboard::dashboardHeader(
-        title = "Covid vs. mental health"
+        title = "Covid vs. mental health",
+        tags$li(
+          shinyWidgets::dropdownButton(
+            change_theme_dropdown(id = "theme"),
+            icon = icon("palette"),
+            right = T
+          ),
+          class = "dropdown"
+        )
       ),
       shinydashboard::dashboardSidebar(
         shinydashboard::sidebarMenu(
           shinydashboard::menuItem("At a glance", tabName = "at_a_glance", icon = icon("dashboard")),
-          shinydashboard::menuItem("COVID-19", tabName = "covid", icon = icon("th"))
+          shinydashboard::menuItem("Data", tabName = "data", icon = icon("database"))
         )
       ),
       shinydashboard::dashboardBody(
+        # Overwrite default CSS:
+        dashboardthemes::shinyDashboardThemes(
+          theme = "grey_light"
+        ),
+        # To allow user to change CSS:
+        mod_change_theme_ui("theme"),
         shinydashboard::tabItems(
           # First tab content
           shinydashboard::tabItem(
@@ -29,7 +45,8 @@ app_ui <- function(request) {
 
           # Second tab content
           shinydashboard::tabItem(
-            tabName = "covid"
+            tabName = "data",
+            mod_data_ui("data")
           )
         )
       )

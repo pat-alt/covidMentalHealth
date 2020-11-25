@@ -18,14 +18,17 @@
 usethis::use_package( "ggplot2" )
 usethis::use_package( "shinydashboard" )
 usethis::use_package( "shinydashboardPlus" )
+usethis::use_package( "dashboardthemes" )
 usethis::use_package( "data.table" )
 usethis::use_package( "shinyWidgets" )
 usethis::use_package( "reticulate" )
+usethis::use_package( "waiter" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module( name = "at_a_glance" ) # Name of the module
-#golem::add_module( name = "name_of_module2" ) # Name of the module
+golem::add_module( name = "data" ) # Name of the module
+golem::add_module( name = "change_theme" )
 
 ## Add helper functions ----
 ## Creates ftc_* and utils_*
