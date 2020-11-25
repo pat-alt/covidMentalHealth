@@ -16,7 +16,7 @@ Imports:
     ggplot2,
     shinydashboard,
     shinydashboardPlus,
-    data.table,
+    data.table (>= 1.13.2),
     shinyWidgets,
     reticulate,
     shinythemes,
