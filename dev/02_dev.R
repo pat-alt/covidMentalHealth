@@ -34,6 +34,7 @@ golem::add_module( name = "change_theme" )
 ## Creates ftc_* and utils_*
 golem::add_fct( "import_tweets" )
 golem::add_fct( "import_covid" )
+golem::add_fct( "install_py_dependencies" )
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
