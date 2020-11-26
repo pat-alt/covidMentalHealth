@@ -1,5 +1,6 @@
 ## Script to get tweet data
-from extract.config import * # configuration
+import os
+from Python.extract import config # configuration
 import tweepy as twpy
 from pymongo import MongoClient
 
@@ -15,13 +16,7 @@ auth.set_access_token(twitter_key, twitter_secret)
 api = twpy.API(auth, parser=twpy.parsers.JSONParser())
 
 # Search terms:
-# mental_health = ["mentalhealth","mental","health","suicide","depression"]
-mental_health = ["covid"]
-
-## SEARCHING ----
-results = api.search(q=mental_health, count=1)
-
-results
+mental_health = ["mental health","suicide","depression"]
 
 ## STREAMING -----
 # Set up stream listener
