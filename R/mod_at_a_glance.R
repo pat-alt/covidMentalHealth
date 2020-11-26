@@ -25,7 +25,7 @@ mod_at_a_glance_ui <- function(id){
 mod_at_a_glance_server <- function(input, output, session){
   ns <- session$ns
   covid <- reactive({
-    data.table::data.table(import_covid(10000))
+    import_covid(10000)
   })
 
   output$plot <- renderPlot({
