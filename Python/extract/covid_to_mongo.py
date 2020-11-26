@@ -3,24 +3,20 @@ import requests
 
 client = MongoClient('mongodb://3.22.27.22:27017')
 db = client.final_proj
-col_diff = db.covid_diff
-col_res = db.covid_res
-diff = requests.get('https://covid19-api.org/api/diff').json()
-res = requests.get('https://covid19-api.org/api/status').json()
+collection = db.covid_timeline
 
-for line in diff:
-    col_diff.update(
-        {'country': line['country'], 'last_update': line['last_update']},
-        {'$setOnInsert': line},
-        upsert=True
-    )
+base_url = 'https://covid19-api.org/api/timeline/'
+countries = [c['alpha2'] for c in requests.get('https://covid19-api.org/api/countries').json()]
+data = [requests.get(f'{base_url}{c}').json() for c in countries]
 
-for line in res:
-    col_res.update(
-        {'country': line['country'], 'last_update': line['last_update']},
-        {'$setOnInsert': line},
-        upsert=True
-    )
+for country in data:
+    for line in country:
+        collection.update(
+            {'country': line['country'], 'last_update': line['last_update']},
+            {'$setOnInsert': line},
+            upsert=True)
+    print(f'inserted data for {country}')
+
 
 #optional: commands to print and delete data
 
