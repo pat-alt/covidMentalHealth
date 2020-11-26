@@ -21,6 +21,7 @@ mod_data_ui <- function(id){
         ),
         tabPanel(
           title = "Covid",
+          sliderInput(ns("n_covid"), "Number of rows:", 1, 1000, 20),
           DT::DTOutput(ns("covid"))
         )
       )
@@ -37,6 +38,11 @@ mod_data_server <- function(input, output, session){
   output$tweets <- DT::renderDT({
     tweets <- import_tweets(input$n_tweets)
     return(tweets)
+  })
+
+  output$covid <- DT::renderDT({
+    covid <- import_covid(input$n_covid)
+    return(covid)
   })
 
 }

@@ -13,8 +13,7 @@ mod_at_a_glance_ui <- function(id){
     fluidRow(
       shinydashboard::box(
         title = "Tweets",
-        sliderInput(ns("n_tweets"), "Number of tweets:", 1, 1000, 20),
-        DT::DTOutput(ns("tweets"))
+        plotOutput(ns("plot"))
       )
     )
   )
@@ -25,9 +24,16 @@ mod_at_a_glance_ui <- function(id){
 #' @noRd
 mod_at_a_glance_server <- function(input, output, session){
   ns <- session$ns
-  output$tweets <- DT::renderDT({
-    tweets <- import_tweets(input$n_tweets)
-    return(tweets)
+  covid <- reactive({
+    data.table::data.table(import_covid(10000))
+  })
+
+  output$plot <- renderPlot({
+    req(!is.null(covid()))
+    ggplot2::ggplot(
+      data = covid()[country=="AF"],
+      aes(x="last_update", y="cases")
+    )
   })
 }
 
