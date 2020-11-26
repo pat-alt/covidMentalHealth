@@ -7,7 +7,7 @@ def load_from_mongo(n):
         db = client.final_proj
         covid_cur = db.covid_res.find({})
         tweets_cur = db.tweets.find({}).limit(int(n))
-        
+
         d = []
         #body, hashtags, time/date, retweet count, user, geocoordinates
         for line in tweets_cur:
@@ -21,9 +21,11 @@ def load_from_mongo(n):
              dict['author'] = line['user']['screen_name']
              dict['author_id'] = line['user']['id']
              d.append(dict)
-        
+
         tweets_df = pd.DataFrame(d)
-        
+
         client.close()
-        
+
         return tweets_df
+
+load_from_mongo(100)
