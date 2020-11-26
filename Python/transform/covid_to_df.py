@@ -1,13 +1,23 @@
-# Function to load tweets
+# Function to load covid data
+from datetime import datetime, timedelta
+
 from pymongo import MongoClient
 import pandas as pd
 
 def covid_from_mongo(n):
         client = MongoClient('mongodb://3.22.27.22:27017')
         db = client.final_proj
-        cur = db.covid_timeline.find({}).limit(int(n))
+
+        fromdate = (datetime.today() - timedelta(weeks=6)).isoformat()
+        cur = db.covid_timeline.find(
+            {'last_update':
+                 {'$gte': fromdate
+                  }
+             }).limit(int(n));
+
 
         d = []
+
         for line in cur:
              dict = {}
              dict['country'] = line['country']
@@ -22,4 +32,3 @@ def covid_from_mongo(n):
         client.close()
 
         return covid_df
-
