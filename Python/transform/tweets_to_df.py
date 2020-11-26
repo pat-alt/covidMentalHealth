@@ -2,15 +2,13 @@
 from pymongo import MongoClient
 import pandas as pd
 
-def load_from_mongo(n):
+def tweets_from_mongo(n):
         client = MongoClient('mongodb://3.22.27.22:27017')
         db = client.final_proj
-        covid_cur = db.covid_res.find({})
-        tweets_cur = db.tweets.find({}).limit(int(n))
+        cur = db.tweets.find({}).limit(int(n))
 
         d = []
-        #body, hashtags, time/date, retweet count, user, geocoordinates
-        for line in tweets_cur:
+        for line in cur:
              dict = {}
              dict['id'] = line['id']
              dict['timestamp'] = line['created_at']
@@ -28,4 +26,3 @@ def load_from_mongo(n):
 
         return tweets_df
 
-load_from_mongo(100)
