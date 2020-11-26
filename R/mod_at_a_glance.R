@@ -12,7 +12,7 @@ mod_at_a_glance_ui <- function(id){
   tagList(
     fluidRow(
       shinydashboard::box(
-        title = "Tweets",
+        title = "Covid case numbers",
         plotOutput(ns("plot"))
       )
     )
@@ -22,6 +22,8 @@ mod_at_a_glance_ui <- function(id){
 #' at_a_glance Server Function
 #'
 #' @noRd
+#'
+#' importFrom data.table :=
 mod_at_a_glance_server <- function(input, output, session){
   ns <- session$ns
   covid <- reactive({
@@ -30,10 +32,17 @@ mod_at_a_glance_server <- function(input, output, session){
 
   output$plot <- renderPlot({
     req(!is.null(covid()))
+    covid <- covid()
+    covid[,date:=as.Date(last_update, format="%Y-%m-%dT%H:%M:%S")]
+    covid_loc <<- covid
     ggplot2::ggplot(
-      data = covid()[country=="AF"],
-      aes(x="last_update", y="cases")
-    )
+      data = covid,
+      ggplot2::aes(x=date, y=cases, colour=country)
+    ) +
+      ggplot2::scale_color_discrete(
+        name="Country:"
+      ) +
+      ggplot2::geom_line()
   })
 }
 
