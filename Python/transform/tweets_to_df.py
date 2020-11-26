@@ -1,17 +1,26 @@
 # Function to load tweets
+from datetime import datetime, timedelta
+from dateutil.parser import parse
+
 from pymongo import MongoClient
 import pandas as pd
 
 def tweets_from_mongo(n):
         client = MongoClient('mongodb://3.22.27.22:27017')
         db = client.final_proj
-        cur = db.tweets.find({}).limit(int(n))
+
+        fromdate = (datetime.today() - timedelta(weeks=6)).isoformat()
+        cur = db.tweets.find(
+            {'created_at':
+                 {'$gte': fromdate
+                  }
+             }).limit(int(n));
 
         d = []
         for line in cur:
              dict = {}
              dict['id'] = line['id']
-             dict['timestamp'] = line['created_at']
+             dict['timestamp'] = parse(line['created_at'])
              dict['text'] = line['text']
              dict['hashtags'] = line['entities']['hashtags']
              dict['coordinates'] = line['coordinates']
