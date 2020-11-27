@@ -5,16 +5,20 @@ from dateutil.parser import parse
 from pymongo import MongoClient
 import pandas as pd
 
-def tweets_from_mongo(n):
+default_from = (datetime.today() - timedelta(days=5)).isoformat()
+default_to = datetime.today().isoformat()
+
+def tweets_from_mongo(from_date=default_from, to_date=default_to):
         client = MongoClient('mongodb://3.22.27.22:27017')
         db = client.final_proj
 
-        fromdate = (datetime.today() - timedelta(weeks=6)).isoformat()
         cur = db.tweets.find(
             {'created_at':
-                 {'$gte': fromdate
-                  }
-             }).limit(int(n));
+                 {
+                 '$gte': from_date
+                 # '$lte': to
+                 }
+             });
 
         d = []
         for line in cur:
@@ -35,3 +39,4 @@ def tweets_from_mongo(n):
 
         return tweets_df
 
+tweets_from_mongo()
