@@ -3,6 +3,7 @@ import os
 from Python.extract.config import * # configuration
 import tweepy as twpy
 from pymongo import MongoClient
+from datetime import datetime, timedelta
 
 # MongoDB connection
 client = MongoClient('mongodb://3.22.27.22:27017')
@@ -18,16 +19,24 @@ api = twpy.API(auth, parser=twpy.parsers.JSONParser())
 # Search terms:
 mental_health = ["mental health","suicide","depression"]
 
+# #delete all tweets (if need to rewrite)
+# collection.delete_many({})
+
 ## STREAMING -----
 # Set up stream listener
 class StreamListener(twpy.StreamListener):
 
     def on_status(self, status):
-        collection.update(
-            {'id': status._json['id']},
-            {'$setOnInsert': status._json},
-            upsert=True
-        )
+
+        if status.author._json['location'] is not None \
+                and status._json['lang'] == 'en' \
+                and len(status.entities['hashtags']) > 0:
+            collection.update(
+                {'id': status._json['id']},
+                {'$setOnInsert': status._json},
+                upsert=True
+            )
+
 
     def on_error(self, status_code):
         if status_code == 420:
@@ -37,6 +46,7 @@ class StreamListener(twpy.StreamListener):
 stream_listener = StreamListener()
 stream = twpy.Stream(auth=api.auth, listener=stream_listener)
 stream.filter(track=mental_health)
+
 
 client.close()
 
