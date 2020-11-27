@@ -39,4 +39,27 @@ def tweets_from_mongo(from_date=default_from, to_date=default_to):
 
         return tweets_df
 
-tweets_from_mongo()
+def import_latest_tweets(n):
+        client = MongoClient('mongodb://3.22.27.22:27017')
+        db = client.final_proj
+
+        cur = db.tweets.find().limit(int(n))
+
+        d = []
+        for line in cur:
+             dict = {}
+             dict['id'] = line['id']
+             dict['timestamp'] = parse(line['created_at'])
+             dict['text'] = line['text']
+             dict['hashtags'] = line['entities']['hashtags']
+             dict['coordinates'] = line['coordinates']
+             dict['author_location'] = line['user']['location']
+             dict['author'] = line['user']['screen_name']
+             dict['author_id'] = line['user']['id']
+             d.append(dict)
+
+        tweets_df = pd.DataFrame(d)
+
+        client.close()
+
+        return tweets_df

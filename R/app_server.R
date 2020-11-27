@@ -11,6 +11,8 @@ app_server <- function( input, output, session ) {
   ggplot2::theme_set(ggplot2::theme_dark()) # global plot theme
   # List the first level callModules here
   callModule(mod_at_a_glance_server, "at_a_glance")
+  callModule(mod_covid_server, "covid")
+  callModule(mod_mental_server, "mental")
   callModule(mod_data_server, "data")
   callModule(mod_change_theme_server, "theme")
 }

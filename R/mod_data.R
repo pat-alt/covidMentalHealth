@@ -36,7 +36,7 @@ mod_data_server <- function(input, output, session){
   ns <- session$ns
 
   output$tweets <- DT::renderDT({
-    tweets <- import_tweets(input$n_tweets)
+    tweets <- import_latest_tweets(input$n_tweets)
     return(tweets)
   })
 
