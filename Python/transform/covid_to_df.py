@@ -2,7 +2,10 @@
 from datetime import datetime, timedelta
 
 from pymongo import MongoClient
+import requests
 import pandas as pd
+
+countries = {c['alpha2']: c['name'] for c in requests.get('https://covid19-api.org/api/countries').json()}
 
 def covid_from_mongo(from_date=None, to_date=None):
         client = MongoClient('mongodb://3.22.27.22:27017')
@@ -31,6 +34,7 @@ def covid_from_mongo(from_date=None, to_date=None):
         for line in cur:
              dict = {}
              dict['country'] = line['country']
+             dict['country_name'] = countries[line['country']]
              dict['last_update'] = line['last_update']
              dict['cases'] = line['cases']
              dict['deaths'] = line['deaths']
@@ -42,3 +46,4 @@ def covid_from_mongo(from_date=None, to_date=None):
         client.close()
 
         return covid_df
+
