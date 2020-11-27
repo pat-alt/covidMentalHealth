@@ -16,6 +16,9 @@
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
 usethis::use_package( "ggplot2" )
+usethis::use_package( "plotly" )
+usethis::use_package( "maps" )
+usethis::use_package( "ggwordcloud" )
 usethis::use_package( "shinydashboard" )
 usethis::use_package( "shinydashboardPlus" )
 usethis::use_package( "dashboardthemes" )
@@ -27,6 +30,8 @@ usethis::use_package( "waiter" )
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module( name = "at_a_glance" ) # Name of the module
+golem::add_module( name = "covid" ) # Name of the module
+golem::add_module( name = "mental" ) # Name of the module
 golem::add_module( name = "data" ) # Name of the module
 golem::add_module( name = "change_theme" )
 

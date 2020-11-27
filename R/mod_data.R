@@ -15,15 +15,15 @@ mod_data_ui <- function(id){
         title = "Data by source",
         id = "data_by_source",
         tabPanel(
+          title = "Covid",
+          DT::DTOutput(ns("covid"))
+        ),
+        tabPanel(
           title = "Tweets",
           sliderInput(ns("n_tweets"), "Number of tweets:", 1, 1000, 20),
           DT::DTOutput(ns("tweets"))
         ),
-        tabPanel(
-          title = "Covid",
-          sliderInput(ns("n_covid"), "Number of rows:", 1, 1000, 20),
-          DT::DTOutput(ns("covid"))
-        )
+        width = 12
       )
     )
   )
@@ -36,12 +36,11 @@ mod_data_server <- function(input, output, session){
   ns <- session$ns
 
   output$tweets <- DT::renderDT({
-    tweets <- import_tweets(input$n_tweets)
+    tweets <- import_latest_tweets(input$n_tweets)
     return(tweets)
   })
 
   output$covid <- DT::renderDT({
-    covid <- import_covid(input$n_covid)
     return(covid)
   })
 

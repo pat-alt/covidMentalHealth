@@ -26,6 +26,8 @@ app_ui <- function(request) {
       shinydashboard::dashboardSidebar(
         shinydashboard::sidebarMenu(
           shinydashboard::menuItem("At a glance", tabName = "at_a_glance", icon = icon("dashboard")),
+          shinydashboard::menuItem("Covid", tabName = "covid", icon = icon("virus")),
+          shinydashboard::menuItem("Mental health", tabName = "mental", icon = icon("head-side-virus")),
           shinydashboard::menuItem("Data", tabName = "data", icon = icon("database"))
         )
       ),
@@ -47,6 +49,18 @@ app_ui <- function(request) {
           ),
 
           # Second tab content
+          shinydashboard::tabItem(
+            tabName = "covid",
+            mod_covid_ui("covid")
+          ),
+
+          # This tab content
+          shinydashboard::tabItem(
+            tabName = "mental",
+            mod_mental_ui("mental")
+          ),
+
+          # Fourth tab content
           shinydashboard::tabItem(
             tabName = "data",
             mod_data_ui("data")

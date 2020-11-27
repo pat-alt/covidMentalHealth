@@ -1,6 +1,6 @@
 ## Script to get tweet data
 import os
-from Python.extract import config # configuration
+from Python.extract.config import * # configuration
 import tweepy as twpy
 from pymongo import MongoClient
 
@@ -39,3 +39,5 @@ stream = twpy.Stream(auth=api.auth, listener=stream_listener)
 stream.filter(track=mental_health)
 
 client.close()
+
+# api.search(mental_health)
