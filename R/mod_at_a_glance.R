@@ -15,14 +15,14 @@ mod_at_a_glance_ui <- function(id){
     fluidPage(
       shinydashboard::box(
         mod_covid_ui(ns("covid")),
-        title = "Covid",
+        title = span( icon("viruses"), "Covid"),
         width = 12,
         height = 6,
         collapsible = T
       ),
       shinydashboard::box(
         mod_mental_ui(ns("mental")),
-        title = "Mental health",
+        title = span( icon("head-side-virus"), "Mental health"),
         width = 12,
         height = 6,
         collapsible = T

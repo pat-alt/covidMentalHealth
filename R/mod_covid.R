@@ -14,29 +14,51 @@ mod_covid_ui <- function(id){
       shinydashboard::tabBox(
         tabPanel(
           title = "At a glance",
-          fluidRow(
+          fluidPage(
             shinydashboard::box(
-              dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
-              uiOutput(ns("countries")),
-              width = 3
+              title = "Global trackrecord",
+              uiOutput(ns("stats")),
+              width = 12
             ),
             shinydashboard::box(
-              plotly::plotlyOutput((ns("ts"))),
-              width = 9
+              title = "Timeline by country",
+              column(
+                dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
+                width = 6
+              ),
+              column(
+                uiOutput(ns("countries")),
+                width = 6
+              ),
+              width=12
+            ),
+            shinydashboard::box(
+              shinycssloaders::withSpinner(
+                ggiraph::girafeOutput((ns("ts")))
+              ),
+              width = 12
             )
           )
         ),
         tabPanel(
           title = "Maps",
-          fluidRow(
+          fluidPage(
             shinydashboard::box(
-              dateInput(ns("date_map"), label = "Date:", value=Sys.Date()),
-              selectInput(ns("variable_map"), label = "Variable:", choices = list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")),
-              width = 3
+              column(
+                dateInput(ns("date_map"), label = "Date:", value=Sys.Date()),
+                width = 6
+              ),
+              column(
+                selectInput(ns("variable_map"), label = "Variable:", choices = list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")),
+                width = 6
+              ),
+              width = 12
             ),
             shinydashboard::box(
-              plotly::plotlyOutput((ns("map"))),
-              width = 9
+              shinycssloaders::withSpinner(
+                ggiraph::girafeOutput((ns("map")))
+              ),
+              width = 12
             )
           )
         ),
@@ -52,6 +74,37 @@ mod_covid_ui <- function(id){
 mod_covid_server <- function(input, output, session){
   ns <- session$ns
 
+  output$stats <- renderUI({
+    stats <- covid[date==Sys.Date(),.(
+      cases=sum(cases, na.rm=T),
+      deaths=sum(deaths, na.rm=T),
+      recovered=sum(recovered, na.rm=T)
+    )]
+    tagList(
+      shinydashboard::infoBox(
+        "Cases:",
+        value = stats$cases,
+        icon = icon("users"),
+        color = "aqua",
+        width = 4
+      ),
+      shinydashboard::infoBox(
+        "Deaths:",
+        value = stats$deaths,
+        icon = icon("skull-crossbones"),
+        color = "red",
+        width = 4
+      ),
+      shinydashboard::infoBox(
+        "Recovered:",
+        value = stats$recovered,
+        icon = icon("heart"),
+        color = "green",
+        width = 4
+      )
+    )
+  })
+
   output$countries <- renderUI({
     req(!is.null(covid))
     countries <- sort(covid[,unique(country_name)])
@@ -64,7 +117,7 @@ mod_covid_server <- function(input, output, session){
     )
   })
 
-  output$ts <- plotly::renderPlotly({
+  output$ts <- ggiraph::renderGirafe({
     req(input$countries, input$date_range)
     dt_plot <- covid[country_name %in% input$countries &
                        date %between% input$date_range]
@@ -76,23 +129,29 @@ mod_covid_server <- function(input, output, session){
       ggplot2::scale_color_discrete(
         name="Country:"
       ) +
-      ggplot2::geom_line() +
+      ggiraph::geom_line_interactive(ggplot2::aes(tooltip=country_name)) +
       ggplot2::labs(
         x = NULL,
         y = y_lab
       )
-    plotly::ggplotly(gg)
+    my_girafe(gg, 6, 4)
   })
 
-  output$map <- plotly::renderPlotly({
+  output$map <- ggiraph::renderGirafe({
     req(input$date_map)
     dt_plot <- covid[date == input$date_map]
     dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="country_name", all.x = T)
     dt_plot[,value:=base::get(input$variable_map)]
-    gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat, group = group)) +
-      ggplot2::geom_polygon(ggplot2::aes(fill = value), color = "white")+
-      ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307", name="Count:")
-    plotly::ggplotly(gg)
+    dt_plot <- dt_plot[!is.na(group)]
+    gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
+      ggiraph::geom_polygon_interactive(ggplot2::aes(fill = value, group = group, tooltip = value, data_id = value), color = NA) +
+      ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307") +
+      ggplot2::labs(
+        x="",
+        y=""
+      ) +
+      theme_maps()
+    my_girafe(gg, 6, 2.5)
   })
 
 }
