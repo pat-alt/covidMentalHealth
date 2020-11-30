@@ -13,36 +13,12 @@ mod_covid_ui <- function(id){
     fluidRow(
       shinydashboard::tabBox(
         tabPanel(
-          title = "At a glance",
+          title = "Global track record",
           fluidPage(
             shinydashboard::box(
-              title = "Global trackrecord",
               uiOutput(ns("stats")),
               width = 12
             ),
-            shinydashboard::box(
-              title = "Timeline by country",
-              column(
-                dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
-                width = 6
-              ),
-              column(
-                uiOutput(ns("countries")),
-                width = 6
-              ),
-              width=12
-            ),
-            shinydashboard::box(
-              shinycssloaders::withSpinner(
-                ggiraph::girafeOutput((ns("ts")))
-              ),
-              width = 12
-            )
-          )
-        ),
-        tabPanel(
-          title = "Maps",
-          fluidPage(
             shinydashboard::box(
               column(
                 dateInput(ns("date_map"), label = "Date:", value=Sys.Date()),
@@ -57,6 +33,28 @@ mod_covid_ui <- function(id){
             shinydashboard::box(
               shinycssloaders::withSpinner(
                 ggiraph::girafeOutput((ns("map")))
+              ),
+              width = 12
+            )
+          )
+        ),
+        tabPanel(
+          title = "Timeline",
+          fluidPage(
+            shinydashboard::box(
+              column(
+                dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
+                width = 6
+              ),
+              column(
+                uiOutput(ns("countries")),
+                width = 6
+              ),
+              width=12
+            ),
+            shinydashboard::box(
+              shinycssloaders::withSpinner(
+                ggiraph::girafeOutput((ns("ts")))
               ),
               width = 12
             )
