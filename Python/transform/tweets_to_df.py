@@ -141,4 +141,3 @@ def import_latest_tweets(n):
         client.close()
 
         return tweets_df
-tweets_from_mongo()
