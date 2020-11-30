@@ -16,6 +16,7 @@
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
 usethis::use_package( "ggplot2" )
+usethis::use_package( "ggiraph" )
 usethis::use_package( "plotly" )
 usethis::use_package( "maps" )
 usethis::use_package( "ggwordcloud" )
@@ -28,6 +29,7 @@ usethis::use_package( "reticulate" )
 usethis::use_package( "waiter" )
 usethis::use_package( "dplyr" )
 usethis::use_package( "tidytext" )
+usethis::use_package( "shinycssloader" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
@@ -47,6 +49,8 @@ golem::add_utils( "complete_dt" )
 golem::add_fct( "prepare_tweet_text" )
 golem::add_fct( "get_sentiment" )
 golem::add_fct( "plot_theme" )
+golem::add_fct( "theme_maps" )
+golem::add_fct( "my_girafe" )
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

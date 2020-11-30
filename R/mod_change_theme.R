@@ -46,7 +46,6 @@ mod_change_theme_server <- function(input, output, session){
       output$uiChangeTheme <- renderUI({
         dashboardthemes::shinyDashboardThemes(theme = input$dbxChangeTheme)
       })
-      waiter::waiter_hide()
     }
   )
 }
