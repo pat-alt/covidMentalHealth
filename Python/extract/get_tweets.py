@@ -14,7 +14,7 @@ collection = db.tweets
 auth = twpy.OAuthHandler(twitter_app_key, twitter_app_secret)
 auth.set_access_token(twitter_key, twitter_secret)
 # Create API object:
-api = twpy.API(auth, parser=twpy.parsers.JSONParser())
+api = twpy.API(auth, parser=twpy.parsers.JSONParser(),timeout=60)
 
 # Search terms:
 mental_health = ["mental health","suicide","depression",'anxiety']
@@ -48,7 +48,7 @@ class StreamListener(twpy.StreamListener):
 # Listen
 stream_listener = StreamListener()
 stream = twpy.Stream(auth=api.auth, listener=stream_listener)
-stream.filter(track=mental_health)
+stream.filter(track=mental_health+covid)
 
 
 client.close()
