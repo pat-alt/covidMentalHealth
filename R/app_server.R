@@ -8,6 +8,7 @@ app_server <- function( input, output, session ) {
   # Set-up:
   reticulate::use_python('/usr/bin/python')
   covid <<- import_covid() # Covid data is sourced into memory once as it is not very large and this speeds up other processes
+  world_map <<- data.table::data.table(ggplot2::map_data("world")) # Load world map data on start up
   ggplot2::theme_set(ggplot2::theme_dark()) # global plot theme
   # List the first level callModules here
   callModule(mod_at_a_glance_server, "at_a_glance")
