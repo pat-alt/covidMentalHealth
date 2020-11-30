@@ -13,7 +13,7 @@ mod_covid_ui <- function(id){
     fluidRow(
       shinydashboard::tabBox(
         tabPanel(
-          title = "Over time",
+          title = "At a glance",
           fluidRow(
             shinydashboard::box(
               dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
@@ -95,12 +95,5 @@ mod_covid_server <- function(input, output, session){
     plotly::ggplotly(gg)
   })
 
-  # output$network <- renderPlot({
-  #   dt_wide <- dcast(unique(covid[,.(date,country,cases)]),date~country, value.var = "cases")
-  #   for (j in names(dt_wide))
-  #     set(dt_wide,which(is.na(dt_wide[[j]])),j,0)
-  #   dt_corr <- corrr::correlate(dt_wide[,-1], diagonal = 1)
-  #   corrr::network_plot(dt_corr)
-  # })
 }
 

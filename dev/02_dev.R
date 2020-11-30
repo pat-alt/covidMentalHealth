@@ -46,6 +46,7 @@ golem::add_fct( "install_py_dependencies" )
 golem::add_utils( "complete_dt" )
 golem::add_fct( "prepare_tweet_text" )
 golem::add_fct( "get_sentiment" )
+golem::add_fct( "plot_theme" )
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

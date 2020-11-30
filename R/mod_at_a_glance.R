@@ -12,7 +12,22 @@
 mod_at_a_glance_ui <- function(id){
   ns <- NS(id)
   tagList(
-
+    fluidPage(
+      shinydashboard::box(
+        mod_covid_ui(ns("covid")),
+        title = "Covid",
+        width = 12,
+        height = 6,
+        collapsible = T
+      ),
+      shinydashboard::box(
+        mod_mental_ui(ns("mental")),
+        title = "Mental health",
+        width = 12,
+        height = 6,
+        collapsible = T
+      )
+    )
   )
 }
 
@@ -23,7 +38,7 @@ mod_at_a_glance_ui <- function(id){
 #' importFrom data.table :=
 mod_at_a_glance_server <- function(input, output, session){
   ns <- session$ns
-
-
+  callModule(mod_covid_server, "covid")
+  callModule(mod_mental_server, "mental")
 }
 
