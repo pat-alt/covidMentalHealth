@@ -63,3 +63,8 @@ def import_latest_tweets(n):
         client.close()
 
         return tweets_df
+
+
+twt = import_latest_tweets(10)
+idx = twt.columns.get_loc('id')
+twt.iloc[:,idx+5]
