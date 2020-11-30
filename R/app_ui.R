@@ -7,8 +7,6 @@
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
-    #waiter::use_waiter(), # include dependencies
-    #waiter::waiter_show_on_load(),
     golem_add_external_resources(),
     # List the first level UI elements here
     shinydashboard::dashboardPage(
@@ -16,7 +14,7 @@ app_ui <- function(request) {
         title = "Covid vs. mental health",
         tags$li(
           shinyWidgets::dropdownButton(
-            change_theme_dropdown(id = "theme"),
+            change_theme_dropdown(id = "theme", defaultTheme = "grey_dark"),
             icon = icon("palette"),
             right = T
           ),
@@ -25,19 +23,13 @@ app_ui <- function(request) {
       ),
       shinydashboard::dashboardSidebar(
         shinydashboard::sidebarMenu(
-          shinydashboard::menuItem("At a glance", tabName = "at_a_glance", icon = icon("dashboard")),
-          shinydashboard::menuItem("Covid", tabName = "covid", icon = icon("virus")),
-          shinydashboard::menuItem("Mental health", tabName = "mental", icon = icon("head-side-virus")),
+          shinydashboard::menuItem("Dashboard", tabName = "at_a_glance", icon = icon("dashboard")),
           shinydashboard::menuItem("Data", tabName = "data", icon = icon("database"))
         )
       ),
       shinydashboard::dashboardBody(
-        # Overwrite default CSS:
-        # tags$head(
-        #   tags$link(rel = "stylesheet", type = "text/css", href = "dark.css")
-        # ),
         dashboardthemes::shinyDashboardThemes(
-          theme = "grey_light"
+          theme = "grey_dark"
         ),
         # To allow user to change CSS:
         mod_change_theme_ui("theme"),
@@ -49,18 +41,6 @@ app_ui <- function(request) {
           ),
 
           # Second tab content
-          shinydashboard::tabItem(
-            tabName = "covid",
-            mod_covid_ui("covid")
-          ),
-
-          # This tab content
-          shinydashboard::tabItem(
-            tabName = "mental",
-            mod_mental_ui("mental")
-          ),
-
-          # Fourth tab content
           shinydashboard::tabItem(
             tabName = "data",
             mod_data_ui("data")

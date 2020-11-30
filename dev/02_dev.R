@@ -26,6 +26,8 @@ usethis::use_package( "data.table" , min_version = T)
 usethis::use_package( "shinyWidgets" )
 usethis::use_package( "reticulate" )
 usethis::use_package( "waiter" )
+usethis::use_package( "dplyr" )
+usethis::use_package( "tidytext" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
@@ -38,8 +40,13 @@ golem::add_module( name = "change_theme" )
 ## Add helper functions ----
 ## Creates ftc_* and utils_*
 golem::add_fct( "import_tweets" )
+golem::add_fct( "import_latest_tweets" )
 golem::add_fct( "import_covid" )
 golem::add_fct( "install_py_dependencies" )
+golem::add_utils( "complete_dt" )
+golem::add_fct( "prepare_tweet_text" )
+golem::add_fct( "get_sentiment" )
+golem::add_fct( "plot_theme" )
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

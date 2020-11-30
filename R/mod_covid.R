@@ -13,7 +13,7 @@ mod_covid_ui <- function(id){
     fluidRow(
       shinydashboard::tabBox(
         tabPanel(
-          title = "Over time",
+          title = "At a glance",
           fluidRow(
             shinydashboard::box(
               dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
@@ -27,10 +27,11 @@ mod_covid_ui <- function(id){
           )
         ),
         tabPanel(
-          title = "Map",
+          title = "Maps",
           fluidRow(
             shinydashboard::box(
-              dateInput(ns("date_range"), label = "Date:", value=Sys.Date()),
+              dateInput(ns("date_map"), label = "Date:", value=Sys.Date()),
+              selectInput(ns("variable_map"), label = "Variable:", choices = list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")),
               width = 3
             ),
             shinydashboard::box(
@@ -53,7 +54,7 @@ mod_covid_server <- function(input, output, session){
 
   output$countries <- renderUI({
     req(!is.null(covid))
-    countries <- sort(covid[,unique(country)])
+    countries <- sort(covid[,unique(country_name)])
     selectInput(
       ns("countries"),
       label = "Choose country",
@@ -65,12 +66,12 @@ mod_covid_server <- function(input, output, session){
 
   output$ts <- plotly::renderPlotly({
     req(input$countries, input$date_range)
-    dt_plot <- covid[country %in% input$countries &
+    dt_plot <- covid[country_name %in% input$countries &
                        date %between% input$date_range]
     y_lab <- "Cases"
     gg <- ggplot2::ggplot(
       data = dt_plot,
-      ggplot2::aes(x=date, y=cases, colour=country)
+      ggplot2::aes(x=date, y=cases, colour=country_name)
     ) +
       ggplot2::scale_color_discrete(
         name="Country:"
@@ -84,24 +85,15 @@ mod_covid_server <- function(input, output, session){
   })
 
   output$map <- plotly::renderPlotly({
-    world_map <- ggplot2::map_data("world")
-    gg <- ggplot2::ggplot(world_map, ggplot2::aes(x = long, y = lat, group = group)) +
-      ggplot2::geom_polygon(fill="lightgray", colour = "white")
+    req(input$date_map)
+    dt_plot <- covid[date == input$date_map]
+    dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="country_name", all.x = T)
+    dt_plot[,value:=base::get(input$variable_map)]
+    gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat, group = group)) +
+      ggplot2::geom_polygon(ggplot2::aes(fill = value), color = "white")+
+      ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307", name="Count:")
     plotly::ggplotly(gg)
   })
 
-  # output$network <- renderPlot({
-  #   dt_wide <- dcast(unique(covid[,.(date,country,cases)]),date~country, value.var = "cases")
-  #   for (j in names(dt_wide))
-  #     set(dt_wide,which(is.na(dt_wide[[j]])),j,0)
-  #   dt_corr <- corrr::correlate(dt_wide[,-1], diagonal = 1)
-  #   corrr::network_plot(dt_corr)
-  # })
 }
-
-## To be copied in the UI
-# mod_covid_ui("covid_ui_1")
-
-## To be copied in the server
-# callModule(mod_covid_server, "covid_ui_1")
 

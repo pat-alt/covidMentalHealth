@@ -47,3 +47,5 @@ def covid_from_mongo(from_date=None, to_date=None):
 
         return covid_df
 
+# test = covid_from_mongo()
+# test.head()
