@@ -1,0 +1,35 @@
+Package: covidMentalHealth
+Title: A simple Shiny app that relates COVID-19 to mental health
+Version: 0.0.0.9000
+Authors@R: person('Patrick', 'Altmeyer', email = 'patrick.altmeyer@barcelonagse.eu', role = c('cre', 'aut'))
+Description: PKG_DESC.
+License: MIT + file LICENSE
+Imports: 
+    config,
+    golem,
+    shiny,
+    processx,
+    attempt,
+    DT,
+    glue,
+    htmltools,
+    ggplot2,
+    shinydashboard,
+    shinydashboardPlus,
+    data.table (>= 1.13.2),
+    shinyWidgets,
+    reticulate,
+    shinythemes,
+    dashboardthemes,
+    waiter,
+    plotly,
+    maps,
+    ggwordcloud,
+    dplyr,
+    tidytext,
+    ggiraph
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat
