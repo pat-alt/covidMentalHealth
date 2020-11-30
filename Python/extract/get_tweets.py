@@ -17,7 +17,8 @@ auth.set_access_token(twitter_key, twitter_secret)
 api = twpy.API(auth, parser=twpy.parsers.JSONParser())
 
 # Search terms:
-mental_health = ["mental health","suicide","depression"]
+mental_health = ["mental health","suicide","depression",'anxiety']
+covid = ['covid','coronavirus','sars-cov-2','pandemic']
 
 # #delete all tweets (if need to rewrite)
 # collection.delete_many({})
@@ -30,7 +31,9 @@ class StreamListener(twpy.StreamListener):
 
         if status.author._json['location'] is not None \
                 and status._json['lang'] == 'en' \
-                and len(status.entities['hashtags']) > 0:
+                and len(status.entities['hashtags']) > 0\
+                and (any([item in status.text.lower() for item in mental_health]) \
+                     and any([item in status.text.lower() for item in covid])) :
             collection.update(
                 {'id': status._json['id']},
                 {'$setOnInsert': status._json},
