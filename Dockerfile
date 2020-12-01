@@ -1,5 +1,5 @@
 FROM rocker/r-ver:4.0.2
-RUN apt-get update && apt-get install -y  git-core libcairo2-dev libcurl4-openssl-dev libgit2-dev libpng-dev libssh2-1-dev libssl-dev libxml2-dev libpython3-dev python3-pip make pandoc pandoc-citeproc python-minimal zlib1g-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y  git-core libcairo2-dev libcurl4-openssl-dev libgit2-dev libpng-dev libssh2-1-dev libssl-dev libxml2-dev libpython3-dev python3-pip make pandoc pandoc-citeproc zlib1g-dev && rm -rf /var/lib/apt/lists/*
 RUN cp /usr/bin/python3 /usr/bin/python
 RUN python -m pip install pymongo pandas
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
