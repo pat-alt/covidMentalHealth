@@ -4,6 +4,9 @@
 ### My stuff ###
 .env
 .Rhistory
+.RData
+.Rhistory
+.DS_store
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
