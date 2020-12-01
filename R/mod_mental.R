@@ -118,7 +118,7 @@ mod_mental_server <- function(input, output, session){
   latest_tweets <- reactive({
     invalidateLater(60000) # rerun every 60 seconds
     req(input$n_tweets)
-    timer(55)
+    timer(60)
     tweets <- import_latest_tweets(n=input$n_tweets)
     return(tweets)
   })
