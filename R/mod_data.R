@@ -16,12 +16,15 @@ mod_data_ui <- function(id){
         id = "data_by_source",
         tabPanel(
           title = "Covid",
-          DT::DTOutput(ns("covid"))
+          fluidPage(
+            DT::DTOutput(ns("covid"))
+          )
         ),
         tabPanel(
           title = "Tweets",
-          sliderInput(ns("n_tweets"), "Number of tweets:", 1, 1000, 20),
-          DT::DTOutput(ns("tweets"))
+          fluidPage(
+            DT::DTOutput(ns("tweets"))
+          )
         ),
         width = 12
       )
@@ -36,12 +39,24 @@ mod_data_server <- function(input, output, session){
   ns <- session$ns
 
   output$tweets <- DT::renderDT({
-    tweets <- import_latest_tweets(input$n_tweets)
+    tweets <- import_latest_tweets(10000)
+    tweets <- tweets[,.(timestamp, author, parse_author_location, text)]
+    data.table::setnames(
+      tweets,
+      c("timestamp", "author", "parse_author_location", "text"),
+      c("Time", "Author", "Location", "Tweet")
+    )
     return(tweets)
   })
 
   output$covid <- DT::renderDT({
-    return(covid)
+    tab <- covid[,.(country_name, date, cases, deaths, recovered)]
+    data.table::setnames(
+      tab,
+      c("country_name", "date", "cases", "deaths", "recovered"),
+      c("Country", "Date", "Cases", "Deaths", "Recovered")
+    )
+    return(tab)
   })
 
 }

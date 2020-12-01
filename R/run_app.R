@@ -22,6 +22,8 @@ run_app <- function(
   world_map[region=="UK", region:="United Kingdom of Great Britain and Northern Ireland"]
   # Custome plot theme:
   ggplot2::theme_set(theme_covid_mental()) # global plot theme
+  # Global parameters:
+  covid_vars <<- list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")
   with_golem_options(
     app = shinyApp(
       ui = app_ui,
