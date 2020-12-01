@@ -169,8 +169,8 @@ mod_mental_server <- function(input, output, session){
     latest <- latest_tweets()
     dt_plot <- latest[as.Date(timestamp) %between% input$date_range_map]
     if(input$variable_map=="n_tweets") {
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="author_location", all = T)
-      dt_plot[,value:=length(unique(id)),by=author_location]
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
+      dt_plot[,value:=length(unique(text[!is.na(text)])),by=parse_author_location]
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
         ggiraph::geom_polygon_interactive(ggplot2::aes(fill = value, group = group, tooltip = value, data_id = value), color = NA) +
@@ -184,8 +184,8 @@ mod_mental_server <- function(input, output, session){
     }
     if (input$variable_map=="sentiment") {
       dt_plot <- prepare_tweet_text(dt_plot)
-      dt_plot <- get_sentiment_by(dt_plot, author_location)
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="author_location", all = T)
+      dt_plot <- get_sentiment_by(dt_plot, parse_author_location)
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
       data.table::setnames(dt_plot, "sentiment", "value")
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
