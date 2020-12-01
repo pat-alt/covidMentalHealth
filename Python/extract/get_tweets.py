@@ -48,7 +48,7 @@ class StreamListener(twpy.StreamListener):
 # Listen
 stream_listener = StreamListener()
 stream = twpy.Stream(auth=api.auth, listener=stream_listener)
-stream.filter(track=mental_health)
+stream.filter(track=mental_health+covid)
 
 
 client.close()
