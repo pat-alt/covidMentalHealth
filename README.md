@@ -9,8 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-*This project was done as part of [Barcelona GSE Masters Program in Data
-Science](https://www.barcelonagse.eu/study/masters-programs/data-science-methodology).*
+*This project was done jointly by [@polinabee](https://github.com/polinabee), [@marcagusti](https://github.com/marcagusti) and myself as part of [Barcelona GSE Masters Program in Data
+Science](https://www.barcelonagse.eu/study/masters-programs/data-science-methodology). Any comments and feedback are appreciated.*
 
 ## Overview
 
@@ -68,3 +68,7 @@ on term from this list related to mental health
 `["mental health","suicide","depression","anxiety"]` *and* at least one
 term from this list related to COVID
 `['covid','coronavirus','sars-cov-2','pandemic']`.
+
+## Ackowledgements
+
+This [tutorial](https://github.com/ranikay/shiny-reticulate-app) by [@ranikay]((https://github.com/ranikay)) was immensely helpful with the deployment process of a reticulated Shiny app. 
