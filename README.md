@@ -61,7 +61,7 @@ to install them.
 
 We source data from two different APIs: for COVID case numbers we use
 <https://covid19-api.org/> which continuously collects case numbers at
-country level from across the globe; for tweets we user Twitter
+country level from across the globe; for tweets we use the Twitter
 streaming API. COVID data is sourced from the API a few times every day.
 Tweets are streamed continuously. We filter tweets that involve at least
 on term from this list related to mental health
