@@ -13,15 +13,35 @@ mod_covid_ui <- function(id){
     fluidRow(
       shinydashboard::tabBox(
         tabPanel(
-          title = "At a glance",
+          title = "Global track record",
           fluidPage(
             shinydashboard::box(
-              title = "Global trackrecord",
               uiOutput(ns("stats")),
               width = 12
             ),
             shinydashboard::box(
-              title = "Timeline by country",
+              column(
+                uiOutput(ns("date_map")),
+                width = 6
+              ),
+              column(
+                selectInput(ns("variable_map"), label = "Variable:", choices = list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")),
+                width = 6
+              ),
+              width = 12
+            ),
+            shinydashboard::box(
+              shinycssloaders::withSpinner(
+                ggiraph::girafeOutput((ns("map")))
+              ),
+              width = 12
+            )
+          )
+        ),
+        tabPanel(
+          title = "Timeline",
+          fluidPage(
+            shinydashboard::box(
               column(
                 dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
                 width = 6
@@ -40,28 +60,6 @@ mod_covid_ui <- function(id){
             )
           )
         ),
-        tabPanel(
-          title = "Maps",
-          fluidPage(
-            shinydashboard::box(
-              column(
-                dateInput(ns("date_map"), label = "Date:", value=Sys.Date()),
-                width = 6
-              ),
-              column(
-                selectInput(ns("variable_map"), label = "Variable:", choices = list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")),
-                width = 6
-              ),
-              width = 12
-            ),
-            shinydashboard::box(
-              shinycssloaders::withSpinner(
-                ggiraph::girafeOutput((ns("map")))
-              ),
-              width = 12
-            )
-          )
-        ),
         width = 12
       )
     )
@@ -74,8 +72,14 @@ mod_covid_ui <- function(id){
 mod_covid_server <- function(input, output, session){
   ns <- session$ns
 
+  output$date_map <- renderUI({
+    max_date <- max(covid$date)
+    dateInput(ns("date_map"), label = "Date:", value=max_date)
+  })
+
   output$stats <- renderUI({
-    stats <- covid[date==Sys.Date(),.(
+    req(input$date_map)
+    stats <- covid[date==input$date_map,.(
       cases=sum(cases, na.rm=T),
       deaths=sum(deaths, na.rm=T),
       recovered=sum(recovered, na.rm=T)
@@ -140,7 +144,7 @@ mod_covid_server <- function(input, output, session){
   output$map <- ggiraph::renderGirafe({
     req(input$date_map)
     dt_plot <- covid[date == input$date_map]
-    dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="country_name", all.x = T)
+    dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="country_name", all = T)
     dt_plot[,value:=base::get(input$variable_map)]
     dt_plot <- dt_plot[!is.na(group)]
     gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +

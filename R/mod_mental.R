@@ -10,16 +10,26 @@
 mod_mental_ui <- function(id){
   ns <- NS(id)
   tagList(
-    fluidRow(
+    shinydashboard::box(
+      width = 12,
+      fluidRow(
+        column(
+          helpText("Tweets related to mental health are streamed from Twitter's streaming API and automatically updated every minute."),
+          width = 6
+        ),
+        column(
+          shinydashboard::infoBoxOutput(ns("countdown"), width = 12),
+          width = 6
+        )
+      ),
       shinydashboard::tabBox(
         tabPanel(
           title = "At a glance",
           fluidRow(
             shinydashboard::box(
-              helpText("Here you can monitor recent tweets. Tweets are streamed from Twitter's streaming API and automatically updated every minute."),
               sliderInput(ns("n_tweets"), label="Number of latest tweets", value = 1000, min = 1, max=1000),
-              sliderInput(ns("max"),
-                          "Maximum Number of Words:",
+              sliderInput(ns("max_words"),
+                          "Maximum number of words (cloud):",
                           min = 1,  max = 300,  value = 100),
               width = 4
             ),
@@ -48,7 +58,7 @@ mod_mental_ui <- function(id){
           fluidRow(
             shinydashboard::box(
               column(
-                dateRangeInput(ns("date_map"), label = "Date range:", start=Sys.Date()-10, end = Sys.Date()),
+                uiOutput(ns("date_range_map")),
                 width = 6
               ),
               column(
@@ -75,23 +85,54 @@ mod_mental_ui <- function(id){
 mod_mental_server <- function(input, output, session){
   ns <- session$ns
 
+  output$date_range_map <- renderUI({
+    latest <<- latest_tweets()
+    max_date <- max(as.Date(latest$timestamp))
+    dateRangeInput(ns("date_range_map"), label = "Date range:", start=Sys.Date()-10, end = max_date)
+  })
+
+  # Countdown to next update:
+  timer <- reactiveVal(60)
+
+  # Output the time left.
+  output$countdown <- shinydashboard::renderInfoBox({
+    req(input$n_tweets)
+    shinydashboard::infoBox(
+      title = "Twitter stream",
+      subtitle = "Time until tweets are next updated",
+      icon = icon("stopwatch"),
+      value = lubridate::seconds_to_period(timer())
+    )
+  })
+
+  # Observer that invalidates every second:
+  observe({
+    invalidateLater(1000, session)
+    isolate({
+      timer(timer()-1)
+    })
+  })
+
   latest_tweets <- reactive({
     invalidateLater(60000) # rerun every 60 seconds
     req(input$n_tweets)
+    timer(55)
     tweets <- import_latest_tweets(n=input$n_tweets)
     return(tweets)
   })
 
   output$cloud <- renderPlot({
-    # Placeholder:
+    req(input$max_words)
     latest <- latest_tweets()
     tweets_tidy <- prepare_tweet_text(latest)
     dt_plot <- tweets_tidy %>%
       dplyr::inner_join(tidytext::get_sentiments("bing"))
-    dt_plot[,n:=.N, by=.(word)]
+    dt_plot <- unique(dt_plot[,.(.N, sentiment=sentiment), by=.(word)])
+    data.table::setorder(dt_plot, -N)
+    dt_plot <- head(dt_plot, input$max_words)
     set.seed(42)
-    dt_plot <- unique(dt_plot[,.(word, n, sentiment)])
-    ggplot2::ggplot(dt_plot, ggplot2::aes(label = word, size = n, colour=sentiment)) +
+    dt_plot <- unique(dt_plot[,.(word, N, sentiment)])
+    ggplot2::ggplot(dt_plot, ggplot2::aes(label = word, size = N, colour=sentiment)) +
       ggwordcloud::geom_text_wordcloud() +
       ggplot2::scale_size_area(max_size = 15) +
       ggplot2::scale_colour_manual(
@@ -106,7 +147,7 @@ mod_mental_server <- function(input, output, session){
     tweets_tidy <- prepare_tweet_text(latest)
     dt_plot <- get_sentiment_by(tweets_tidy, timestamp)
     gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x=timestamp, y=sentiment, tooltip=sentiment)) +
-      ggiraph::geom_col_interactive(fill="coral") +
+      ggiraph::geom_point_interactive(colour="coral", size=0.5) +
       ggiraph::geom_smooth_interactive(fill="coral") +
       ggplot2::labs(
         x="Time",
@@ -117,19 +158,19 @@ mod_mental_server <- function(input, output, session){
 
   output$latest <- renderTable({
     latest <- latest_tweets()
-    tab <- latest[1:3,.(timestamp, text)]
+    tab <- tail(latest[,.(timestamp, text)],3)
     data.table::setnames(tab, c("timestamp", "text"), c("Time", "Tweet"))
     tab[,Time:=as.character(Time)]
     return(tab)
   })
 
   output$map <- ggiraph::renderGirafe({
-    req(input$date_map)
+    req(input$date_range_map)
     latest <- latest_tweets()
-    dt_plot <- latest[as.Date(timestamp) == input$date_map]
+    dt_plot <- latest[as.Date(timestamp) %between% input$date_range_map]
     if(input$variable_map=="n_tweets") {
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="author_location", all.x = T)
-      dt_plot[,value:=length(unique(id)),by=author_location]
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
+      dt_plot[,value:=length(unique(text[!is.na(text)])),by=parse_author_location]
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
         ggiraph::geom_polygon_interactive(ggplot2::aes(fill = value, group = group, tooltip = value, data_id = value), color = NA) +
@@ -143,8 +184,8 @@ mod_mental_server <- function(input, output, session){
     }
     if (input$variable_map=="sentiment") {
       dt_plot <- prepare_tweet_text(dt_plot)
-      dt_plot <- get_sentiment_by(dt_plot, author_location)
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="author_location", all.x = T)
+      dt_plot <- get_sentiment_by(dt_plot, parse_author_location)
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
       data.table::setnames(dt_plot, "sentiment", "value")
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
