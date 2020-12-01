@@ -121,7 +121,7 @@ def import_latest_tweets(n):
         client = MongoClient('mongodb://3.22.27.22:27017')
         db = client.final_proj
 
-        cur = db.tweets.find().limit(int(n))
+        cur = db.tweets.find().sort('created_at',-1).limit(int(n))
 
         d = []
         for line in cur:

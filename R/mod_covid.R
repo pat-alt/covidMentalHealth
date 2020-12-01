@@ -21,7 +21,7 @@ mod_covid_ui <- function(id){
             ),
             shinydashboard::box(
               column(
-                dateInput(ns("date_map"), label = "Date:", value=Sys.Date()),
+                uiOutput(ns("date_map")),
                 width = 6
               ),
               column(
@@ -72,8 +72,14 @@ mod_covid_ui <- function(id){
 mod_covid_server <- function(input, output, session){
   ns <- session$ns
 
+  output$date_map <- renderUI({
+    max_date <- max(covid$date)
+    dateInput(ns("date_map"), label = "Date:", value=max_date)
+  })
+
   output$stats <- renderUI({
-    stats <- covid[date==Sys.Date(),.(
+    req(input$date_map)
+    stats <- covid[date==input$date_map,.(
       cases=sum(cases, na.rm=T),
       deaths=sum(deaths, na.rm=T),
       recovered=sum(recovered, na.rm=T)
@@ -138,7 +144,7 @@ mod_covid_server <- function(input, output, session){
   output$map <- ggiraph::renderGirafe({
     req(input$date_map)
     dt_plot <- covid[date == input$date_map]
-    dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="country_name", all.x = T)
+    dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="country_name", all = T)
     dt_plot[,value:=base::get(input$variable_map)]
     dt_plot <- dt_plot[!is.na(group)]
     gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
