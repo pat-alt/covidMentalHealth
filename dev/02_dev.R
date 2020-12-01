@@ -28,8 +28,9 @@ usethis::use_package( "dplyr" )
 usethis::use_package( "tidyr" )
 usethis::use_package( "tidytext" )
 usethis::use_package( "shinycssloaders" )
-usethis::use_package( "lubridate" )
+usethis::use_package( "lubridate", min_version = T)
 usethis::use_package( "zoo" )
+usethis::use_package( "maps" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

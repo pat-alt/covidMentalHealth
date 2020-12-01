@@ -25,9 +25,12 @@ Imports:
     dplyr,
     tidytext,
     ggiraph,
-    lubridate,
+    lubridate (>= 1.7.9),
     zoo,
-    tidyr
+    tidyr,
+    pkgload,
+    shinycssloaders,
+    maps
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
