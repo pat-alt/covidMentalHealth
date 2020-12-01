@@ -68,7 +68,9 @@ mod_mental_ui <- function(id){
               width = 12
             ),
             shinydashboard::box(
-              ggiraph::girafeOutput((ns("map"))),
+              shinycssloaders::withSpinner(
+                ggiraph::girafeOutput((ns("map")))
+              ),
               width = 12
             )
           )
@@ -181,7 +183,7 @@ mod_mental_server <- function(input, output, session){
     latest <- latest_tweets()
     dt_plot <- latest[as.Date(timestamp) %between% input$date_range_map]
     if(input$variable_map=="n_tweets") {
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T, allow.cartesian = T)
       dt_plot[,value:=length(unique(text[!is.na(text)])),by=parse_author_location]
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +

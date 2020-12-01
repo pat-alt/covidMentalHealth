@@ -1,10 +1,3 @@
-#' Import latest tweets
-#'
-#' @param n
-#'
-#' @return
-#'
-#' @examples
 import_latest_tweets <- function(n) {
   # Load Python module:
   reticulate::source_python(file.path(Sys.getenv("TRANSFORM_DIR"),"tweets_to_df.py"))

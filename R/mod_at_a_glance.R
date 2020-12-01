@@ -4,7 +4,6 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#'
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
@@ -33,8 +32,6 @@ mod_at_a_glance_ui <- function(id){
 #' at_a_glance Server Function
 #'
 #' @noRd
-#'
-#' importFrom data.table :=
 mod_at_a_glance_server <- function(input, output, session){
   ns <- session$ns
   callModule(mod_covid_server, "covid")

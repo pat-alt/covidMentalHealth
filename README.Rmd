@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-*This project was done as part of Barcelona GSE masters in data science.*
+*This project was done as part of [Barcelona GSE Masters Program in Data Science](https://www.barcelonagse.eu/study/masters-programs/data-science-methodology).*
 
 ## Overview
 
@@ -33,10 +33,9 @@ The app is hosted on shinyapps.io. Due to usage limits the server may not always
 docker run -d --name covid --net host patalt/covid_mental_health
 ```
 
-
 ### Install as R package
 
-R users not familiar with docker may prefer to install the app as an R package and run it through R Studio. To do so first install the package through:
+In case unfamiliar with Docker some users may prefer to install the app as an R package and run it through R Studio. To do so first install and attach the package through:
 
 ```{r, eval=F}
 devtools::install_git(url = "https://github.com/pat-alt/covidMentalHealth.git", branch = "main")

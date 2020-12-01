@@ -1,7 +1,3 @@
-#' Title
-#'
-#' @param tweets
-#'
 prepare_tweet_text <- function(tweets) {
 
   stop_words <- tidytext::stop_words

@@ -9,8 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-*This project was done as part of Barcelona GSE masters in data
-science.*
+*This project was done as part of [Barcelona GSE Masters Program in Data
+Science](https://www.barcelonagse.eu/study/masters-programs/data-science-methodology).*
 
 ## Overview
 
