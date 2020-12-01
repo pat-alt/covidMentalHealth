@@ -7,7 +7,11 @@ import_covid <- function(from_date=NULL, to_date=NULL) {
       dt[,date:=as.Date(last_update, format="%Y-%m-%dT%H:%M:%S")]
       dt[,last_update:=NULL]
       # Remove duplicate dates:
-      dt[,(c("cases", "deaths", "recovered")) := .(cases=max(cases), deaths=max(deaths), recovered=max(recovered)), by=.(country, date)]
+      dt[,(c("cases", "deaths", "recovered")) := .(
+        cases=max(cases, na.rm = T),
+        deaths=max(deaths, na.rm = T),
+        recovered=max(recovered, na.rm = T)
+      ), by=.(country, date)]
       data.table::setkey(dt, date, country)
       # Complete table:
       dt <- complete_dt(dt, c("country", "country_name"), c("date"))

@@ -15,6 +15,7 @@ import_latest_tweets <- function(n) {
     {
       # Pre-process hashtags:
       dt[,hashtags:=list(lapply(hashtags, function(i) lapply(i, function(j) j$text)))]
+      data.table::setorder(dt, timestamp)
       return(dt)
     },
     error = function(e) {
