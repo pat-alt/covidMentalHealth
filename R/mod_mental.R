@@ -27,10 +27,10 @@ mod_mental_ui <- function(id){
           title = "At a glance",
           fluidRow(
             shinydashboard::box(
-              sliderInput(ns("n_tweets"), label="Number of latest tweets", value = 1000, min = 1, max=1000),
+              sliderInput(ns("n_tweets"), label="Number of latest tweets", value = 1000, min = 1, max=10000),
               sliderInput(ns("max_words"),
                           "Maximum number of words (cloud):",
-                          min = 1,  max = 300,  value = 100),
+                          min = 1,  max = 300,  value = 50),
               width = 4
             ),
             shinydashboard::box(

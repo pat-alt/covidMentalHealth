@@ -29,26 +29,33 @@ Docker. To use the Docker image run:
 
 ### Install as R package
 
-R users not familiar with docker may prefer to install the app as an R
-package and run it through R Studio. To do so first install the package
-through:
+In case unfamiliar with Docker some users may prefer to install the app
+as an R package and run it through R Studio. To do so first install the
+package through:
 
 ``` r
 devtools::install_git(url = "https://github.com/pat-alt/covidMentalHealth.git", branch = "main")
-library(covidMentalHealth)
 ```
 
-Then simply run `run_app()` to run the Shiny app.
+Once this is done you can simply run `covidMentalHealth::run_app()` to
+launch the Shiny app.
 
 ### R and Python integration
 
 The app relies on both R and Python code. The latter is integrated
-through [reticulate](https://rstudio.github.io/reticulate/). The app
-looks for the Python version found on your `PATH` through
-`reticulate::use_python(Sys.which("python"))`. Python dependencies are
-imported on load. In case you are missing any of the dependencies on
-your machine you can install them through
-`covidMentalHealth::install_py_dependencies()`.
+through [reticulate](https://rstudio.github.io/reticulate/). By default
+the `use_venv` argument of `run_app()` is set to `TRUE`, which will tell
+the app to set up a Python 3 virtual environment to be used by
+`reticulate`. This should generally work provided you have all the
+dependencies installed - for a great tutorial see
+[here](https://github.com/ranikay/shiny-reticulate-app).
+
+Setting up the virtual environment takes time, so in case you are
+already familiar with `reticulate` and perhaps even have a default
+`RETICULATE_PYTHON` path set up, you can set `use_venv=FALSE` to run
+`reticulate` in the usual way. In case you are missing Python
+dependencies you can use `covidMentalHealth::install_py_dependencies()`
+to install them.
 
 ## Data
 

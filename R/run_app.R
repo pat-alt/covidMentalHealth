@@ -1,6 +1,6 @@
 #' Run the Shiny Application
 #'
-#' @param use_venve Boolean: Should virtual environment be set up when running from local?
+#' @param use_venv Boolean: Should virtual environment be set up when running from local?
 #' @param ... A series of options to be used inside the app.
 #'
 #' @export

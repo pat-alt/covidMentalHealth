@@ -11,7 +11,8 @@
 install_py_dependencies <- function(method = "auto", conda = "auto") {
   py_modules <- list(
     "pandas",
-    "pymongo"
+    "pymongo",
+    "requests"
   )
   lapply(
     py_modules,
