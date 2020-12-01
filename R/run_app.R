@@ -5,6 +5,9 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
+#' @importFrom data.table :=
+#' @importFrom data.table %between%
+#' @importFrom dplyr %>%
 run_app <- function(
   ...
 ) {
@@ -14,7 +17,7 @@ run_app <- function(
     spinner.color="#9fc9f4",
     spinner.type=8
   )
-  reticulate::use_python('/usr/bin/python')
+  reticulate::use_python(Sys.which("python"))
   covid <<- import_covid() # Covid data is sourced into memory once as it is not very large and this speeds up other processes
   world_map <<- data.table::data.table(ggplot2::map_data("world")) # Load world map data on start up
   # Mapping important countries to COVID data:

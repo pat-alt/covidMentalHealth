@@ -2,7 +2,6 @@
 #'
 #' @param tweets
 #'
-#' @importFrom magrittr %>%
 prepare_tweet_text <- function(tweets) {
 
   stop_words <- tidytext::stop_words

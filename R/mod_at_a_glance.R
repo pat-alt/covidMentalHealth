@@ -4,7 +4,6 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @importFrom data.table %between%
 #'
 #' @noRd
 #'

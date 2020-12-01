@@ -21,15 +21,13 @@ Imports:
     reticulate,
     shinythemes,
     dashboardthemes,
-    waiter,
-    plotly,
-    maps,
     ggwordcloud,
     dplyr,
     tidytext,
     ggiraph,
     lubridate,
-    zoo
+    zoo,
+    tidyr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

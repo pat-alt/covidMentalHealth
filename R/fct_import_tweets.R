@@ -2,7 +2,6 @@
 #'
 #' @param n
 #'
-#' @importFrom data.table :=
 #'
 #' @return
 #'

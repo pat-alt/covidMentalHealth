@@ -7,7 +7,9 @@
 install_py_dependencies(method = "auto", conda = "auto")
 }
 \arguments{
-\item{conda}{}
+\item{method}{Inherited from reticulate package}
+
+\item{conda}{Inherited from reticulate package}
 }
 \value{
 

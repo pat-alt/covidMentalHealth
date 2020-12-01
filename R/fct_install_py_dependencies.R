@@ -1,7 +1,7 @@
 #' install_py_dependencies
 #'
-#' @param method
-#' @param conda
+#' @param method Inherited from reticulate package
+#' @param conda Inherited from reticulate package
 #'
 #' @description Wrapper function that can be used to conveniently install all Python dependencies.
 #'
