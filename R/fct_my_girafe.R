@@ -1,4 +1,4 @@
-my_girafe = function(ggobj, width_svg=6, height_svg=5, hover_col="#9fc9f4",...) {
+my_girafe = function(ggobj, width_svg=6, height_svg=5, hover_col="#d211f4",...) {
   ggiraph::girafe(
     ggobj=ggobj,
     width_svg=width_svg,

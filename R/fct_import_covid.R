@@ -15,6 +15,9 @@ import_covid <- function(from_date=NULL, to_date=NULL) {
       data.table::setkey(dt, date, country)
       # Complete table:
       dt <- complete_dt(dt, c("country", "country_name"), c("date"))
+      dt[,cases:=zoo::na.locf(cases, na.rm = F), by=.(country)]
+      dt[,deaths:=zoo::na.locf(deaths, na.rm = F), by=.(country)]
+      dt[,recovered:=zoo::na.locf(recovered, na.rm = F), by=.(country)]
       return(dt)
     },
     error = function(e) {

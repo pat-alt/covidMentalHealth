@@ -46,3 +46,7 @@ def covid_from_mongo(from_date=None, to_date=None):
         client.close()
 
         return covid_df
+
+# test = covid_from_mongo()
+# len(set(test.country))
+# len(set(test.country_name))

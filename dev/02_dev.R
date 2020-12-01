@@ -31,6 +31,7 @@ usethis::use_package( "dplyr" )
 usethis::use_package( "tidytext" )
 usethis::use_package( "shinycssloader" )
 usethis::use_package( "lubridate" )
+usethis::use_package( "zoo" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

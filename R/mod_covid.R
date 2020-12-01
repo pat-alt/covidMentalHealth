@@ -25,7 +25,7 @@ mod_covid_ui <- function(id){
                 width = 6
               ),
               column(
-                selectInput(ns("variable_map"), label = "Variable:", choices = list("Cases"="cases", "Deaths"="deaths", "Recovered"="recovered")),
+                selectInput(ns("variable_map"), label = "Variable:", choices = covid_vars),
                 width = 6
               ),
               width = 12
@@ -43,12 +43,20 @@ mod_covid_ui <- function(id){
           fluidPage(
             shinydashboard::box(
               column(
-                dateRangeInput(ns("date_range"), label = "Date:", start=Sys.Date()-100, end = Sys.Date()),
-                width = 6
+                selectInput(ns("variable"), label = "Variable:", choices = covid_vars),
+                width = 3
+              ),
+              column(
+                dateRangeInput(ns("date_range"), label = "Date range time line:", start=Sys.Date()-100, end = Sys.Date()),
+                width = 3
+              ),
+              column(
+                dateRangeInput(ns("date_range_growth"), label = "Average growth rate over:", start=Sys.Date()-100, end = Sys.Date()),
+                width = 3
               ),
               column(
                 uiOutput(ns("countries")),
-                width = 6
+                width = 3
               ),
               width=12
             ),
@@ -56,7 +64,13 @@ mod_covid_ui <- function(id){
               shinycssloaders::withSpinner(
                 ggiraph::girafeOutput((ns("ts")))
               ),
-              width = 12
+              width = 6
+            ),
+            shinydashboard::box(
+              shinycssloaders::withSpinner(
+                ggiraph::girafeOutput((ns("growth")))
+              ),
+              width = 6
             )
           )
         ),
@@ -117,18 +131,19 @@ mod_covid_server <- function(input, output, session){
       label = "Choose country",
       choices = countries,
       multiple = T,
-      selected = countries[1]
+      selected = c("Spain", "Germany", "France", "Netherlands", "Belgium")
     )
   })
 
   output$ts <- ggiraph::renderGirafe({
-    req(input$countries, input$date_range)
+    req(input$countries, input$date_range, input$variable)
     dt_plot <- covid[country_name %in% input$countries &
                        date %between% input$date_range]
-    y_lab <- "Cases"
+    y_lab <- names(covid_vars)[which(covid_vars==input$variable)]
+    data.table::setnames(dt_plot, input$variable, "value")
     gg <- ggplot2::ggplot(
       data = dt_plot,
-      ggplot2::aes(x=date, y=cases, colour=country_name)
+      ggplot2::aes(x=date, y=value, colour=country_name)
     ) +
       ggplot2::scale_color_discrete(
         name="Country:"
@@ -141,6 +156,43 @@ mod_covid_server <- function(input, output, session){
     my_girafe(gg, 6, 4)
   })
 
+  output$growth <- ggiraph::renderGirafe({
+    req(input$countries, input$date_range_growth)
+    dt_plot <- covid[country_name %in% input$countries &
+                       date %between% input$date_range_growth]
+    y_lab <- sprintf(
+      "%s per day (average)",
+      names(covid_vars)[which(covid_vars==input$variable)]
+    )
+    data.table::setnames(dt_plot, input$variable, "value")
+    dt_plot[,value:=mean(c(NA,diff(value)),na.rm=T),by=.(country, country_name)]
+    gg <- ggplot2::ggplot(
+      data = dt_plot,
+      ggplot2::aes(x=country_name, y=value, fill=country_name)
+    ) +
+      ggplot2::scale_fill_discrete(
+        name="Country:",
+        guide=F
+      ) +
+      ggiraph::geom_bar_interactive(ggplot2::aes(
+        tooltip=sprintf(
+          "Country: %s\nCount: %f",
+          country_name,
+          value
+        )
+      ), stat="identity") +
+      ggplot2::labs(
+        x = NULL,
+        y = y_lab
+      ) +
+      ggplot2::coord_flip() +
+      ggplot2::theme(
+        axis.text.x=ggplot2::element_blank(),
+        axis.ticks.x=ggplot2::element_blank()
+      )
+    my_girafe(gg, 6, 4)
+  })
+
   output$map <- ggiraph::renderGirafe({
     req(input$date_map)
     dt_plot <- covid[date == input$date_map]
@@ -148,8 +200,16 @@ mod_covid_server <- function(input, output, session){
     dt_plot[,value:=base::get(input$variable_map)]
     dt_plot <- dt_plot[!is.na(group)]
     gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
-      ggiraph::geom_polygon_interactive(ggplot2::aes(fill = value, group = group, tooltip = value, data_id = value), color = NA) +
-      ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307") +
+      ggiraph::geom_polygon_interactive(ggplot2::aes(
+        fill = value, group = group,
+        tooltip = sprintf(
+          "Count: %f\nCountry: %s",
+          value,
+          country_name
+        ),
+        data_id = value
+      ), color = NA) +
+      ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307", name="Count:") +
       ggplot2::labs(
         x="",
         y=""

@@ -83,6 +83,8 @@ def parsed_location(author_location):
                 out = 'United States of America'
             elif state_code in author_location:
                 out = 'United States of America'
+    if out is None:
+        out = author_location
     return out
 
 def tweets_from_mongo(from_date=default_from, to_date=default_to):
@@ -132,6 +134,7 @@ def import_latest_tweets(n):
              dict['hashtags'] = line['entities']['hashtags']
              dict['coordinates'] = line['coordinates']
              dict['author_location'] = line['user']['location']
+             dict['parse_author_location'] = parsed_location(line['user']['location'])
              dict['author'] = line['user']['screen_name']
              dict['author_id'] = line['user']['id']
              d.append(dict)
@@ -141,3 +144,6 @@ def import_latest_tweets(n):
         client.close()
 
         return tweets_df
+
+# test = import_latest_tweets(10)
+# test.parse_author_location[1]

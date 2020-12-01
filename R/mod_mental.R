@@ -146,9 +146,20 @@ mod_mental_server <- function(input, output, session){
     latest <- latest_tweets()
     tweets_tidy <- prepare_tweet_text(latest)
     dt_plot <- get_sentiment_by(tweets_tidy, timestamp)
-    gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x=timestamp, y=sentiment, tooltip=sentiment)) +
-      ggiraph::geom_point_interactive(colour="coral", size=0.5) +
-      ggiraph::geom_smooth_interactive(fill="coral") +
+    gg <- ggplot2::ggplot(dt_plot) +
+      ggplot2::geom_smooth(ggplot2::aes(x=timestamp, y=sentiment), fill="coral") +
+      ggiraph::geom_point_interactive(
+        colour="coral",
+        ggplot2::aes(
+          x=timestamp,
+          y=sentiment,
+          tooltip = sprintf(
+            "Sentiment: %f\nTime stamp: %s",
+            sentiment,
+            as.character(timestamp)
+          )
+        )
+      ) +
       ggplot2::labs(
         x="Time",
         y="Sentiment"
@@ -158,7 +169,8 @@ mod_mental_server <- function(input, output, session){
 
   output$latest <- renderTable({
     latest <- latest_tweets()
-    tab <- tail(latest[,.(timestamp, text)],3)
+    latest <- latest[order(-timestamp)]
+    tab <- head(latest[,.(timestamp, text)],3)
     data.table::setnames(tab, c("timestamp", "text"), c("Time", "Tweet"))
     tab[,Time:=as.character(Time)]
     return(tab)
@@ -169,12 +181,20 @@ mod_mental_server <- function(input, output, session){
     latest <- latest_tweets()
     dt_plot <- latest[as.Date(timestamp) %between% input$date_range_map]
     if(input$variable_map=="n_tweets") {
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="author_location", all = T)
-      dt_plot[,value:=length(unique(id)),by=author_location]
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
+      dt_plot[,value:=length(unique(text[!is.na(text)])),by=parse_author_location]
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
-        ggiraph::geom_polygon_interactive(ggplot2::aes(fill = value, group = group, tooltip = value, data_id = value), color = NA) +
-        ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307") +
+        ggiraph::geom_polygon_interactive(ggplot2::aes(
+          fill = value, group = group,
+          tooltip = sprintf(
+            "Count: %f\nCountry: %s",
+            value,
+            parse_author_location
+          ),
+          data_id = value
+        ), color = NA) +
+        ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307", name="Number of tweets:") +
         ggplot2::labs(
           x="",
           y=""
@@ -184,13 +204,21 @@ mod_mental_server <- function(input, output, session){
     }
     if (input$variable_map=="sentiment") {
       dt_plot <- prepare_tweet_text(dt_plot)
-      dt_plot <- get_sentiment_by(dt_plot, author_location)
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="author_location", all = T)
+      dt_plot <- get_sentiment_by(dt_plot, parse_author_location)
+      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
       data.table::setnames(dt_plot, "sentiment", "value")
       dt_plot <- dt_plot[!is.na(group)]
       gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
-        ggiraph::geom_polygon_interactive(ggplot2::aes(fill = value, group = group, tooltip = value, data_id = value), color = NA) +
-        ggplot2::scale_fill_gradient(low = "coral", high = "lightblue") +
+        ggiraph::geom_polygon_interactive(ggplot2::aes(
+          fill = value, group = group,
+          tooltip = sprintf(
+            "Sentiment: %f\nCountry: %s",
+            value,
+            parse_author_location
+          ),
+          data_id = value
+        ), color = NA) +
+        ggplot2::scale_fill_gradient(low = "coral", high = "lightblue", name="Sentiment:") +
         ggplot2::labs(
           x="",
           y=""

@@ -1,6 +1,12 @@
 ## Script to get tweet data
 import os
-from Python.extract.config import * # configuration
+try:
+    from Python.extract.config import * # configuration
+except ImportError:
+    twitter_app_key = os.getenv('TWITTER_APP_KEY')
+    twitter_app_secret = os.getenv('TWITTER_APP_SECRET')
+    twitter_key = os.getenv('TWITTER_KEY')
+    twitter_secret = os.getenv('TWITTER_SECRET')
 import tweepy as twpy
 from pymongo import MongoClient
 from datetime import datetime, timedelta
@@ -48,7 +54,7 @@ class StreamListener(twpy.StreamListener):
 # Listen
 stream_listener = StreamListener()
 stream = twpy.Stream(auth=api.auth, listener=stream_listener)
-stream.filter(track=mental_health)
+stream.filter(track=mental_health+covid)
 
 
 client.close()
