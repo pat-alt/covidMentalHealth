@@ -71,4 +71,4 @@ term from this list related to COVID
 
 ## Ackowledgements
 
-This [tutorial](https://github.com/ranikay/shiny-reticulate-app) by [@ranikay]((https://github.com/ranikay)) was immensely helpful with the deployment process of a reticulated Shiny app. 
+This [tutorial](https://github.com/ranikay/shiny-reticulate-app) by [@ranikay](https://github.com/ranikay) was immensely helpful with the deployment process of a reticulated Shiny app. 
