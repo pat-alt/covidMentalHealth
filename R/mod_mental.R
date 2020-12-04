@@ -59,11 +59,7 @@ mod_mental_ui <- function(id){
             shinydashboard::box(
               column(
                 uiOutput(ns("date_range_map")),
-                width = 6
-              ),
-              column(
-                selectInput(ns("variable_map"), label = "Variable:", choices = list("Number of tweets"="n_tweets", "Sentiment"="sentiment")),
-                width = 6
+                width = 12
               ),
               width = 12
             ),
@@ -116,9 +112,9 @@ mod_mental_server <- function(input, output, session){
   })
 
   latest_tweets <- reactive({
-    invalidateLater(60000) # rerun every 60 seconds
+    invalidateLater(300000) # rerun every 60 seconds
     req(input$n_tweets)
-    timer(60)
+    timer(300)
     tweets <- import_latest_tweets(n=input$n_tweets)
     return(tweets)
   })
@@ -182,29 +178,29 @@ mod_mental_server <- function(input, output, session){
     req(input$date_range_map)
     latest <- latest_tweets()
     dt_plot <- latest[as.Date(timestamp) %between% input$date_range_map]
-    if(input$variable_map=="n_tweets") {
-      dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T, allow.cartesian = T)
-      dt_plot[,value:=length(unique(text[!is.na(text)])),by=parse_author_location]
-      dt_plot <- dt_plot[!is.na(group)]
-      gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
-        ggiraph::geom_polygon_interactive(ggplot2::aes(
-          fill = value, group = group,
-          tooltip = sprintf(
-            "Count: %f\nCountry: %s",
-            value,
-            parse_author_location
-          ),
-          data_id = value
-        ), color = NA) +
-        ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307", name="Number of tweets:") +
-        ggplot2::labs(
-          x="",
-          y=""
-        ) +
-        theme_maps()
-      return(my_girafe(gg, 6, 2.5))
-    }
-    if (input$variable_map=="sentiment") {
+    # if(input$variable_map=="n_tweets") {
+    #   dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
+    #   dt_plot[,value:=length(unique(text[!is.na(text)])),by=parse_author_location]
+    #   dt_plot <- dt_plot[!is.na(group)]
+    #   gg <- ggplot2::ggplot(dt_plot, ggplot2::aes(x = long, y = lat)) +
+    #     ggiraph::geom_polygon_interactive(ggplot2::aes(
+    #       fill = value, group = group,
+    #       tooltip = sprintf(
+    #         "Count: %f\nCountry: %s",
+    #         value,
+    #         parse_author_location
+    #       ),
+    #       data_id = value
+    #     ), color = NA) +
+    #     ggplot2::scale_fill_gradient(low = "#f7b49e", high = "#f74307", name="Number of tweets:") +
+    #     ggplot2::labs(
+    #       x="",
+    #       y=""
+    #     ) +
+    #     theme_maps()
+    #   return(my_girafe(gg, 6, 2.5))
+    # }
+    # if (input$variable_map=="sentiment") {
       dt_plot <- prepare_tweet_text(dt_plot)
       dt_plot <- get_sentiment_by(dt_plot, parse_author_location)
       dt_plot <- merge(y=world_map, x=dt_plot, by.y="region", by.x="parse_author_location", all = T)
@@ -227,7 +223,7 @@ mod_mental_server <- function(input, output, session){
         ) +
         theme_maps()
       return(my_girafe(gg, 6, 2.5))
-    }
+    # }
 
   })
 
